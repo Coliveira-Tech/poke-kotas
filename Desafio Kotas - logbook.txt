@@ -2,3 +2,5 @@ Desafio Kotas - logbook
 
 - leitura do README do projeto para conhecer os requisitos
 - leitura da documentação da pokeapi.co
+- escolha da arquitetura a ser utilizada
+- criação das pastas e arquivos primordiais

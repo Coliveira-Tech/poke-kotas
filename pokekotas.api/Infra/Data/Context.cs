@@ -26,5 +26,6 @@ namespace Pokekotas.Api.Infra.Data
         }
 
         public DbSet<Trainer> Trainers { get; set; }
+        public DbSet<CapturedPokemon> CapturedPokemons { get; set; }
     }
 }

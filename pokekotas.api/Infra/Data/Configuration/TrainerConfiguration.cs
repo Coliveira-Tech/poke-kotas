@@ -12,6 +12,9 @@ namespace Pokekotas.Api.Infra.Data.Configuration
         {
             builder.ToTable("Trainer");
             builder.Property(e => e.Id).HasDefaultValueSql("NEWID()");
+            builder.Property(e => e.Name).IsRequired().HasMaxLength(100);
+            builder.Property(e => e.Age).IsRequired();
+            builder.Property(e => e.Document).IsRequired().HasMaxLength(20);
 
             builder.HasKey(e => e.Id);
         }
