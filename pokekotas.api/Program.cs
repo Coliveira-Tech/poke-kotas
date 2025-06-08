@@ -1,4 +1,6 @@
+using Flurl.Http.Configuration;
 using Microsoft.EntityFrameworkCore;
+using Pokekotas.Api.Acls;
 using Pokekotas.Api.Extensions;
 using Pokekotas.Api.Infra.Data;
 using Pokekotas.Api.Interfaces;
@@ -9,6 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<ITrainerService, TrainerService>();
 builder.Services.AddScoped<ICapturedPokemonService, CapturedPokemonService>();
+builder.Services.AddScoped<IPokemonAcl, PokemonAcl>();
+
+string? apiBaseUrl = builder.Configuration.GetValue<string>("BaseUrlApi");
+builder.Services.AddSingleton(sp => new FlurlClientCache()
+    .Add("pokeapi"
+       , apiBaseUrl));
 
 builder.Services.AddMvc()
                 .AddJsonOptions(x =>
