@@ -9,7 +9,7 @@ namespace Pokekotas.Api.Acls
         private readonly IConfiguration _configuration = configuration;
         private readonly string _baseUrl = configuration.GetValue<string>("BaseUrlApi") ?? "";
 
-        public async Task<IGraphQLQueryResults<Pokemon>> GetById(int pokemonId)
+        public async Task<IGraphQLQueryResults<PokemonResult>> GetById(int pokemonId)
         {
             return await _baseUrl
                             .WithGraphQLQuery(@"
@@ -48,10 +48,10 @@ namespace Pokekotas.Api.Acls
                              ")
                             .SetGraphQLVariables(new { id = pokemonId })
                             .PostGraphQLQueryAsync()
-                            .ReceiveGraphQLQueryResults<Pokemon>();
+                            .ReceiveGraphQLQueryResults<PokemonResult>();
         }
 
-        public async Task<IGraphQLQueryResults<Pokemon>> GetRandom(int quantity)
+        public async Task<IGraphQLQueryResults<PokemonResult>> GetRandom(int quantity)
         {
             int lastPokemonAvailable = _configuration.GetValue<int>("LastPokemonAvailable");
 
@@ -71,16 +71,16 @@ namespace Pokekotas.Api.Acls
                             .WithGraphQLQuery(@"
                                 query ($ids: [Int!])
                                 {
-                                    pokemon: pokemon_v2_pokemonspecies(
+                                    pokemonresult: pokemon_v2_pokemonspecies(
                                     order_by: {id: asc}
                                     limit: 10
                                     where: {id: {_in: $ids}
       	                                    , pokemon_v2_pokemons: {is_default: {_eq: true}}}
                                     ) 
                                     {
-                                        id
-                                        name
                                         pokemon_v2_pokemons {
+                                            id
+                                            name
                                             height
                                             weight
                                             base_experience
@@ -111,7 +111,7 @@ namespace Pokekotas.Api.Acls
                                 }")
                             .SetGraphQLVariables(new { ids })
                             .PostGraphQLQueryAsync()
-                            .ReceiveGraphQLQueryResults<Pokemon>("pokemon");
+                            .ReceiveGraphQLQueryResults<PokemonResult>("pokemonresult");
         }
     }
 }
