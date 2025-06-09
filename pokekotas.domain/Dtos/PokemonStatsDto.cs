@@ -4,7 +4,7 @@
     {
         public PokemonStatsDto() {}
 
-        public PokemonStatsDto(List<PokemonV2Pokemonstat> pokemonStats)
+        public PokemonStatsDto(List<RawPokemonstatDto> pokemonStats)
         {
             if (pokemonStats == null || pokemonStats.Count == 0)
                 throw new ArgumentException("Pokemon stats cannot be null or empty.", nameof(pokemonStats));

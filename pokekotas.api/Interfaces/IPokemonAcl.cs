@@ -5,7 +5,7 @@ namespace Pokekotas.Api.Interfaces
 {
     public interface IPokemonAcl
     {
-        Task<IGraphQLQueryResults<PokemonResult>> GetById(int pokemonId);
-        Task<IGraphQLQueryResults<PokemonResult>> GetRandom(int quantity);
+        Task<IGraphQLQueryResults<RawPokemonResultDto>> GetById(int pokemonId);
+        Task<IGraphQLQueryResults<RawPokemonResultDto>> GetRandom(int quantity);
     }
 }

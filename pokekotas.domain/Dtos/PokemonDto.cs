@@ -2,10 +2,9 @@
 {
     public class PokemonDto
     {
-
         public PokemonDto() { }
 
-        public PokemonDto(PokemonV2Pokemon pokemon)
+        public PokemonDto(RawPokemonDto pokemon)
         {
             if (pokemon == null)
                 throw new ArgumentNullException(nameof(pokemon), "Pokemon cannot be null.");

@@ -2,28 +2,13 @@
 
 namespace Pokekotas.Domain.Dtos
 {
-    public class PokemonResult
-    {
-        [JsonPropertyName("pokemon_v2_pokemons")]
-        public List<PokemonV2Pokemon> PokemonV2Pokemons { get; set; }
-
-        [JsonPropertyName("pokemon_v2_evolutionchain")]
-        public PokemonV2Evolutionchain PokemonV2Evolutionchain { get; set; }
-    }
-
-    public class PokemonV2Evolutionchain
-    {
-        [JsonPropertyName("pokemon_v2_pokemonspecies")]
-        public List<PokemonV2Pokemonspecy> PokemonV2Pokemonspecies { get; set; }
-    }
-
-    public class PokemonV2Pokemon
+    public class RawPokemonResultDto
     {
         [JsonPropertyName("id")]
         public int Id { get; set; }
 
         [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         [JsonPropertyName("height")]
         public int Height { get; set; }
@@ -38,68 +23,111 @@ namespace Pokekotas.Domain.Dtos
         public bool IsDefault { get; set; }
 
         [JsonPropertyName("pokemon_v2_pokemonstats")]
-        public List<PokemonV2Pokemonstat> PokemonV2Pokemonstats { get; set; }
+        public List<RawPokemonstatDto> PokemonV2Pokemonstats { get; set; } = [];
 
         [JsonPropertyName("pokemon_v2_pokemontypes")]
-        public List<PokemonV2Pokemontype> PokemonV2Pokemontypes { get; set; }
+        public List<RawPokemonTypeDto> PokemonV2Pokemontypes { get; set; } = [];
 
         [JsonPropertyName("pokemon_v2_pokemonsprites")]
-        public List<PokemonV2Pokemonsprite> PokemonV2Pokemonsprites { get; set; }
+        public List<RawPokemonSpriteDto> PokemonV2Pokemonsprites { get; set; } = [];
+
+        [JsonPropertyName("pokemon_v2_pokemonspecy")]
+        public RawPokemonSpeciesDto PokemonV2Pokemonspecy { get; set; } = null!;
     }
 
-    public class PokemonV2Pokemonspecy
+    public class RawEvolutionChainDto
+    {
+        [JsonPropertyName("pokemon_v2_pokemonspecies")]
+        public List<RawPokemonSpeciesIdNameDto> PokemonV2Pokemonspecies { get; set; } = [];
+    }
+
+    public class RawPokemonDto
     {
         [JsonPropertyName("id")]
         public int Id { get; set; }
 
         [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
+
+        [JsonPropertyName("height")]
+        public int Height { get; set; }
+
+        [JsonPropertyName("weight")]
+        public int Weight { get; set; }
+
+        [JsonPropertyName("base_experience")]
+        public int BaseExperience { get; set; }
+
+        [JsonPropertyName("is_default")]
+        public bool IsDefault { get; set; }
+
+        [JsonPropertyName("pokemon_v2_pokemonstats")]
+        public List<RawPokemonstatDto> PokemonV2Pokemonstats { get; set; } = [];
+
+        [JsonPropertyName("pokemon_v2_pokemontypes")]
+        public List<RawPokemonTypeDto> PokemonV2Pokemontypes { get; set; } = [];
+
+        [JsonPropertyName("pokemon_v2_pokemonsprites")]
+        public List<RawPokemonSpriteDto> PokemonV2Pokemonsprites { get; set; } = [];
     }
 
-    public class PokemonV2Pokemonsprite
+    public class RawPokemonSpeciesDto
+    {
+        [JsonPropertyName("pokemon_v2_evolutionchain")]
+        public RawEvolutionChainDto PokemonV2Evolutionchain { get; set; } = null!;
+    }
+
+    public class RawPokemonSpeciesIdNameDto
+    {
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
+
+        [JsonPropertyName("name")]
+        public string Name { get; set; } = null!;
+    }
+
+    public class RawPokemonSpriteDto
     {
         [JsonPropertyName("sprites")]
-        public Sprites Sprites { get; set; }
+        public RawSpritesDto Sprites { get; set; } = null!;
     }
 
-    public class PokemonV2Pokemonstat
+    public class RawPokemonstatDto
     {
         [JsonPropertyName("pokemon_v2_stat")]
-        public PokemonV2Stat PokemonV2Stat { get; set; }
+        public RawStatDto PokemonV2Stat { get; set; } = null!;
 
         [JsonPropertyName("base_stat")]
         public int BaseStat { get; set; }
     }
 
-    public class PokemonV2Pokemontype
+    public class RawPokemonTypeDto
     {
         [JsonPropertyName("pokemon_v2_type")]
-        public PokemonV2Type PokemonV2Type { get; set; }
+        public RawTypeDto PokemonV2Type { get; set; } = null!;
     }
 
-    public class PokemonV2Stat
+    public class RawStatDto
     {
         [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
     }
 
-    public class PokemonV2Type
+    public class RawTypeDto
     {
         [JsonPropertyName("id")]
         public int Id { get; set; }
 
         [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
     }
 
-    public class Sprites
+    public class RawSpritesDto
     {
         [JsonPropertyName("back_default")]
-        public string BackDefault { get; set; }
+        public string BackDefault { get; set; } = null!;
 
         [JsonPropertyName("front_default")]
-        public string FrontDefault { get; set; }
-
+        public string FrontDefault { get; set; } = null!;
     }
-
 }

@@ -3,7 +3,7 @@
     public class PokemonTypeDto
     {
         public PokemonTypeDto() { }
-        public PokemonTypeDto(PokemonV2Pokemontype pokemonType)
+        public PokemonTypeDto(RawPokemonTypeDto pokemonType)
         {
             if (pokemonType == null)
                 throw new ArgumentNullException(nameof(pokemonType), "Pokemon type cannot be null.");

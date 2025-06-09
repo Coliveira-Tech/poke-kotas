@@ -3,7 +3,7 @@
     public class PokemonSpriteDto
     {
         public PokemonSpriteDto() { }
-        public PokemonSpriteDto(PokemonV2Pokemonsprite pokemonSprite)
+        public PokemonSpriteDto(RawPokemonSpriteDto pokemonSprite)
         {
             if (pokemonSprite == null)
                 throw new ArgumentNullException(nameof(pokemonSprite), "Pokemon sprite cannot be null.");
