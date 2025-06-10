@@ -9,9 +9,10 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IPokemonAcl, PokemonAcl>();
 builder.Services.AddScoped<ITrainerService, TrainerService>();
 builder.Services.AddScoped<ICapturedPokemonService, CapturedPokemonService>();
-builder.Services.AddScoped<IPokemonAcl, PokemonAcl>();
+builder.Services.AddScoped<IPokemonService, PokemonService>();
 
 string? apiBaseUrl = builder.Configuration.GetValue<string>("BaseUrlApi");
 builder.Services.AddSingleton(sp => new FlurlClientCache()
