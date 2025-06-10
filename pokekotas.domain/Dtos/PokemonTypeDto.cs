@@ -8,8 +8,8 @@
             if (pokemonType == null)
                 throw new ArgumentNullException(nameof(pokemonType), "Pokemon type cannot be null.");
 
-            Id = pokemonType.PokemonV2Type.Id;
-            Name = pokemonType.PokemonV2Type.Name;
+            Id = pokemonType.Type.Id;
+            Name = pokemonType.Type.Name;
         }
 
         public int Id { get; set; }

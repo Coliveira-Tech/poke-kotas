@@ -9,7 +9,7 @@ namespace Pokekotas.Api.Acls
         private readonly IConfiguration _configuration = configuration;
         private readonly string _baseUrl = configuration.GetValue<string>("BaseUrlApi") ?? "";
 
-        public async Task<IGraphQLQueryResults<RawPokemonResultDto>> GetById(int pokemonId)
+        public async Task<IGraphQLQueryResults<RawPokemonDto>> GetById(int pokemonId)
         {
             return await _baseUrl
                             .WithGraphQLQuery(@"
@@ -48,10 +48,10 @@ namespace Pokekotas.Api.Acls
                              ")
                             .SetGraphQLVariables(new { id = pokemonId })
                             .PostGraphQLQueryAsync()
-                            .ReceiveGraphQLQueryResults<RawPokemonResultDto>();
+                            .ReceiveGraphQLQueryResults<RawPokemonDto>();
         }
 
-        public async Task<IGraphQLQueryResults<RawPokemonResultDto>> GetRandom(int quantity)
+        public async Task<IGraphQLQueryResults<RawPokemonDto>> GetRandom(int quantity)
         {
             int lastPokemonAvailable = _configuration.GetValue<int>("LastPokemonAvailable");
 
@@ -67,14 +67,14 @@ namespace Pokekotas.Api.Acls
                                 .Take(quantity)
                                 .ToArray();
 
-            return await _baseUrl //query ($ids: [Int!])
+            return await _baseUrl 
                             .WithGraphQLQuery(@"
-                                
+                                query ($ids: [Int!])
                                 {
-                                  pokemonresult: pokemon_v2_pokemon(
+                                  RawPokemons: pokemon_v2_pokemon(
                                     order_by: {id: asc}
                                     limit: 10
-                                    where: {id: {_in: [148, 150]}, is_default: {_eq: true}}
+                                    where: {id: {_in: $ids}, is_default: {_eq: true}}
                                   ) {
                                     id
                                     name
@@ -107,51 +107,9 @@ namespace Pokekotas.Api.Acls
                                     }
                                   }
                                 }")
-                            //.SetGraphQLVariables(new { ids })
+                            .SetGraphQLVariables(new { ids })
                             .PostGraphQLQueryAsync()
-                            .ReceiveGraphQLQueryResults<RawPokemonResultDto>("pokemonresult");
+                            .ReceiveGraphQLQueryResults<RawPokemonDto>("RawPokemons");
         }
     }
 }
-//@"
-//query ($ids: [Int!])
-//                                {
-//                                    pokemonresult: pokemon_v2_pokemonspecies(
-//                                    order_by: {id: asc}
-//                                    limit: 10
-//                                    where: {id: {_in: $ids}
-//      	                                    , pokemon_v2_pokemons: {is_default: {_eq: true}}}
-//                                    ) 
-//                                    {
-//                                        pokemon_v2_pokemons {
-//                                            id
-//                                            name
-//                                            height
-//                                            weight
-//                                            base_experience
-//                                            is_default
-//                                            pokemon_v2_pokemonstats {
-//                                            pokemon_v2_stat {
-//                                                name
-//                                            }
-//                                            base_stat
-//                                            }
-//                                            pokemon_v2_pokemontypes {
-//                                            pokemon_v2_type {
-//                                                id
-//                                                name
-//                                            }
-//                                            }
-//                                            pokemon_v2_pokemonsprites {
-//                                            sprites
-//                                            }
-//                                        }
-//                                        pokemon_v2_evolutionchain {
-//                                            pokemon_v2_pokemonspecies {
-//                                            id
-//                                            name
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//"

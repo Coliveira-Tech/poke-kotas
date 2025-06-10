@@ -4,35 +4,35 @@
     {
         public PokemonStatsDto() {}
 
-        public PokemonStatsDto(List<RawPokemonstatDto> pokemonStats)
+        public PokemonStatsDto(List<RawPokemonStatsDto> pokemonStats)
         {
             if (pokemonStats == null || pokemonStats.Count == 0)
                 throw new ArgumentException("Pokemon stats cannot be null or empty.", nameof(pokemonStats));
 
-            foreach (var stat in pokemonStats)
+            foreach (var stats in pokemonStats)
             {
-                switch (stat.PokemonV2Stat.Name.ToLower())
+                switch (stats.Stats.Name.ToLower())
                 {
                     case "hp":
-                        Hp = stat.BaseStat;
+                        Hp = stats.BaseStats;
                         break;
                     case "attack":
-                        Attack = stat.BaseStat;
+                        Attack = stats.BaseStats;
                         break;
                     case "defense":
-                        Defense = stat.BaseStat;
+                        Defense = stats.BaseStats;
                         break;
                     case "special-attack":
-                        SpecialAttack = stat.BaseStat;
+                        SpecialAttack = stats.BaseStats;
                         break;
                     case "special-defense":
-                        SpecialDefense = stat.BaseStat;
+                        SpecialDefense = stats.BaseStats;
                         break;
                     case "speed":
-                        Speed = stat.BaseStat;
+                        Speed = stats.BaseStats;
                         break;
                     default:
-                        throw new ArgumentException($"Unknown stat type: {stat.PokemonV2Stat.Name}");
+                        throw new ArgumentException($"Unknown stat type: {stats.Stats.Name}");
                 }
             }
         }
