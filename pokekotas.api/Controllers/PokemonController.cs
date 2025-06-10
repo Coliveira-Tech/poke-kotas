@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Pokekotas.Api.Interfaces;
+using Pokekotas.Domain.Dtos;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Pokekotas.Api.Controllers
@@ -14,7 +15,13 @@ namespace Pokekotas.Api.Controllers
         [HttpGet()]
         public async Task<IActionResult> Get()
         {
-            return Ok(await _service.GetRandom(10));
+
+            var result = await _service.GetRandom(10);
+
+            List<PokemonDto> pokemonList = result.Select(x => new PokemonDto(x)).ToList();
+
+
+            return Ok(pokemonList);
         }
 
     }

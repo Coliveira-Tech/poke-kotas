@@ -15,9 +15,17 @@
             Weight = pokemon.Weight;
             BaseExperience = pokemon.BaseExperience;
             IsDefault = pokemon.IsDefault;
-            //PokemonStats = new PokemonStatsDto(pokemon.PokemonV2Pokemonstats);
-            //PokemonTypes = [.. pokemon.PokemonV2Pokemontypes.Select(pt => new PokemonTypeDto(pt))];
-            //PokemonSprites = [.. pokemon.PokemonV2Pokemonsprites.Select(ps => new PokemonSpriteDto(ps))];
+            PokemonStats = new PokemonStatsDto(pokemon.PokemonStats);
+            PokemonTypes = [.. pokemon.PokemonTypes
+                                        .Select(type => new PokemonTypeDto(type))];
+            PokemonSprites = [.. pokemon
+                                .PokemonSprites
+                                .Select(sprite => new PokemonSpriteDto(sprite))];
+            EvolutionChain = [.. pokemon
+                                .PokemonSpecies
+                                .EvolutionChain
+                                .PokemonSpeciesIdName
+                                .Select(evolutions => new EvolutionChainDto(evolutions))];
         }
         public int Id { get; set; }
         public string Name { get; set; } = null!;
@@ -28,5 +36,6 @@
         public PokemonStatsDto PokemonStats { get; set; } = new();
         public List<PokemonTypeDto> PokemonTypes { get; set; } = [];
         public List<PokemonSpriteDto> PokemonSprites { get; set; } = [];
+        public List<EvolutionChainDto> EvolutionChain { get; set; } = [];
     }
 }
