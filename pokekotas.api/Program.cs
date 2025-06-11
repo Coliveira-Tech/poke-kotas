@@ -14,10 +14,10 @@ builder.Services.AddScoped<ITrainerService, TrainerService>();
 builder.Services.AddScoped<ICapturedPokemonService, CapturedPokemonService>();
 builder.Services.AddScoped<IPokemonService, PokemonService>();
 
-string? apiBaseUrl = builder.Configuration.GetValue<string>("BaseUrlApi");
-builder.Services.AddSingleton(sp => new FlurlClientCache()
-    .Add("pokeapi"
-       , apiBaseUrl));
+//string? apiBaseUrl = builder.Configuration.GetValue<string>("BaseUrlApi");
+//builder.Services.AddSingleton(sp => new FlurlClientCache()
+//    .Add("pokeapi"
+//       , apiBaseUrl));
 
 builder.Services.AddMvc()
                 .AddJsonOptions(x =>

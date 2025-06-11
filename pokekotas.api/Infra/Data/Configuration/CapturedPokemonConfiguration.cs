@@ -22,7 +22,7 @@ namespace Pokekotas.Api.Infra.Data.Configuration
 
             builder.HasKey(e => e.Id);
 
-            //builder.Navigation(e => e.Trainer).AutoInclude();
+            builder.Navigation(e => e.Trainer).AutoInclude();
 
             builder.HasOne(e => e.Trainer)
                 .WithMany(e => e.CapturedPokemons)

@@ -11,7 +11,6 @@ namespace Pokekotas.Domain.Dtos
             Id = entity.Id;
             Name = entity.Name;
             Age = entity.Age;
-            Document = entity.Document;
         }
 
         public TrainerDto(Trainer entity, List<RawPokemonDto> RawPokemonList)
