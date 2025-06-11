@@ -1,40 +1,208 @@
-﻿using Pokekotas.Api.Interfaces;
+﻿using Pokekotas.Api.Extensions;
+using Pokekotas.Api.Interfaces;
+using Pokekotas.Domain.Dtos;
 using Pokekotas.Domain.Entities;
+using Pokekotas.Domain.Models;
 
 namespace Pokekotas.Api.Services
 {
     public class CapturedPokemonService(ILogger<CapturedPokemonService> logger,
                       IRepository<CapturedPokemon> repository): ICapturedPokemonService
     {
-        public async Task<IEnumerable<CapturedPokemon>> GetCapturedPokemons()
+        private readonly ILogger<CapturedPokemonService> _logger = logger;
+        private readonly IRepository<CapturedPokemon> _repository = repository;
+
+        public async Task<CapturedPokemonResponse> Delete(Guid id)
         {
-            logger.LogInformation("Fetching all captured pokemons from the repository.");
-            return await repository.GetAll();
-        }
-        public async Task<CapturedPokemon> GetCapturedPokemonById(Guid id)
-        {
-            logger.LogInformation($"Fetching captured pokemon with ID {id} from the repository.");
-            var capturedPokemons = await repository.Get(p => p.Id == id);
-            return capturedPokemons.FirstOrDefault(new CapturedPokemon());
-        }
-        public async Task AddCapturedPokemon(CapturedPokemon capturedPokemon)
-        {
-            logger.LogInformation("Adding a new captured pokemon to the repository.");
-            await repository.Insert(capturedPokemon);
-        }
-        public async Task UpdateCapturedPokemon(CapturedPokemon capturedPokemon)
-        {
-            logger.LogInformation($"Updating captured pokemon with ID {capturedPokemon.Id} in the repository.");
-            await repository.Update(capturedPokemon);
-        }
-        public async Task DeleteCapturedPokemon(Guid id)
-        {
-            logger.LogInformation($"Deleting captured pokemon with ID {id} from the repository.");
-            var capturedPokemon = await GetCapturedPokemonById(id);
-            if (capturedPokemon != null)
+            CapturedPokemonResponse response = new();
+            try
             {
-                await repository.Delete(capturedPokemon);
+                CapturedPokemon? entity = (await _repository
+                                            .Get(x => x.Id == id))
+                                            .FirstOrDefault();
+
+                if (entity == null)
+                {
+                    response.Message.Add("No captured pokemon found");
+                    response.ErrorCode = StatusCodes.Status404NotFound;
+                    return response;
+                }
+
+                await _repository.Delete(entity);
+
+                CapturedPokemonDto? dto = new(entity);
+
+                ArgumentNullException.ThrowIfNull(dto);
+
+                response.ListResponse.Add(dto);
+                _logger.LogInformation("Successfully delete captured pokemon {id}", entity.Id);
             }
+            catch (Exception ex)
+            {
+                response.Message.Add($"Error trying to delete captured pokemon {id}");
+                response.Message.Add(ex.Message);
+                response.ErrorCode = StatusCodes.Status400BadRequest;
+            }
+
+            return response;
+        }
+
+        public async Task<CapturedPokemonResponse> GetAll()
+        {
+            CapturedPokemonResponse response = new();
+
+            try
+            {
+                IEnumerable<CapturedPokemon> entities = await _repository.GetAll();
+
+                if (!entities.Any())
+                {
+                    response.Message.Add("No captured pokemon found");
+                    response.ErrorCode = StatusCodes.Status404NotFound;
+                    return response;
+                }
+
+                response.ListResponse.AddRange(entities.ToDtoList<CapturedPokemon, CapturedPokemonDto>());
+
+                _logger.LogInformation("Successfully retrieve {count} captured pokemons", entities.Count());
+            }
+            catch (Exception ex)
+            {
+                response.Message.Add("Error trying to retrieve captured pokemon");
+                response.Message.Add(ex.Message);
+                response.ErrorCode = StatusCodes.Status400BadRequest;
+            }
+
+            return response;
+        }
+
+        public async Task<CapturedPokemonResponse> GetById(Guid id)
+        {
+            CapturedPokemonResponse response = new();
+
+            try
+            {
+                CapturedPokemon? entity = (await _repository
+                                            .Get(x => x.Id == id))
+                                            .FirstOrDefault();
+
+                if (entity == null)
+                {
+                    response.Message.Add("No captured pokemon found");
+                    response.ErrorCode = StatusCodes.Status404NotFound;
+                    return response;
+                }
+
+                response.ListResponse.Add(new CapturedPokemonDto(entity));
+
+                _logger.LogInformation("Successfully retrieve captured pokemon {id}", entity.Id);
+            }
+            catch (Exception ex)
+            {
+                response.Message.Add($"Error trying to retrieve captured pokemon {id}");
+                response.Message.Add(ex.Message);
+                response.ErrorCode = StatusCodes.Status400BadRequest;
+            }
+
+            return response;
+        }
+
+        public async Task<CapturedPokemonResponse> GetByTrainerId(Guid trainerId)
+        {
+            CapturedPokemonResponse response = new();
+
+            try
+            {
+                IEnumerable<CapturedPokemon> entities = await _repository
+                                                                .Get(x => x.TrainerId == trainerId);
+
+                if (!entities.Any())
+                {
+                    response.Message.Add("No captured pokemon found");
+                    response.ErrorCode = StatusCodes.Status404NotFound;
+                    return response;
+                }
+
+                response.ListResponse.AddRange(entities.ToDtoList<CapturedPokemon, CapturedPokemonDto>());
+
+                _logger.LogInformation("Successfully retrieve {count} captured pokemons", entities.Count());
+            }
+            catch (Exception ex)
+            {
+                response.Message.Add("Error trying to retrieve captured pokemon");
+                response.Message.Add(ex.Message);
+                response.ErrorCode = StatusCodes.Status400BadRequest;
+            }
+
+            return response;
+        }
+
+        public async Task<CapturedPokemonResponse> Insert(CapturedPokemonInsertRequest request)
+        {
+            CapturedPokemonResponse response = new();
+
+            try
+            {
+                CapturedPokemon entity = new()
+                {
+                    TrainerId = request.TrainerId,
+                    PokemonId = request.PokemonId,
+                    Level = request.Level,
+                    Nickname = request.Nickname,
+                };
+
+                await _repository.Insert(entity);
+
+                CapturedPokemonDto? dto = new(entity);
+
+                ArgumentNullException.ThrowIfNull(dto);
+
+                response.ListResponse.Add(dto);
+                _logger.LogInformation("Successfully inserted captured pokemon {id}", entity.Id);
+            }
+            catch (Exception ex)
+            {
+                response.Message.Add($"Error trying to insert captured pokemon");
+                response.Message.Add(ex.Message);
+                response.ErrorCode = StatusCodes.Status400BadRequest;
+            }
+
+            return response;
+        }
+
+        public async Task<CapturedPokemonResponse> Update(Guid id, CapturedPokemonUpdateRequest request)
+        {
+            CapturedPokemonResponse response = new();
+
+            try
+            {
+                CapturedPokemon? entity = (await _repository
+                                            .Get(x => x.Id == id))
+                                            .FirstOrDefault();
+
+                ArgumentNullException.ThrowIfNull(entity);
+
+                entity.TrainerId = request.TrainerId;
+                entity.Level = request.Level;
+                entity.Nickname = request.Nickname;
+
+                await _repository.Update(entity);
+
+                CapturedPokemonDto? dto = new(entity);
+
+                ArgumentNullException.ThrowIfNull(dto);
+
+                response.ListResponse.Add(dto);
+                _logger.LogInformation("captured pokemon {id} successfully updated", entity.Id);
+            }
+            catch (Exception ex)
+            {
+                response.Message.Add($"Error trying to update captured pokemon {id}");
+                response.Message.Add(ex.Message);
+                response.ErrorCode = StatusCodes.Status400BadRequest;
+            }
+
+            return response;
         }
     }
 }

@@ -1,13 +1,14 @@
-﻿using Pokekotas.Domain.Entities;
+﻿using Pokekotas.Domain.Models;
 
 namespace Pokekotas.Api.Interfaces
 {
     public interface ICapturedPokemonService
     {
-        Task<IEnumerable<CapturedPokemon>> GetCapturedPokemons();
-        Task<CapturedPokemon> GetCapturedPokemonById(Guid id);
-        Task AddCapturedPokemon(CapturedPokemon capturedPokemon);
-        Task UpdateCapturedPokemon(CapturedPokemon capturedPokemon);
-        Task DeleteCapturedPokemon(Guid id);
+        Task<CapturedPokemonResponse> Delete(Guid id);
+        Task<CapturedPokemonResponse> GetAll();
+        Task<CapturedPokemonResponse> GetById(Guid id);
+        Task<CapturedPokemonResponse> GetByTrainerId(Guid id);
+        Task<CapturedPokemonResponse> Insert(CapturedPokemonInsertRequest request);
+        Task<CapturedPokemonResponse> Update(Guid id, CapturedPokemonUpdateRequest request);
     }
 }

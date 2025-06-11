@@ -15,6 +15,15 @@ namespace Pokekotas.Domain.Dtos
             Nickname = request.Nickname;
         }
 
+        public CapturedPokemonDto(CapturedPokemon entity)
+        {
+            TrainerId = entity.TrainerId;
+            PokemonId = entity.PokemonId;
+            CapturedAt = entity.CapturedAt;
+            Level = entity.Level;
+            Nickname = entity.Nickname;
+        }
+
         public CapturedPokemonDto(CapturedPokemon entity, RawPokemonDto rawPokemon): base(rawPokemon)
         {
             TrainerId = entity.TrainerId;
