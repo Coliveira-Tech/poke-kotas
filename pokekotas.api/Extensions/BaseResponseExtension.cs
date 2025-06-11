@@ -1,5 +1,5 @@
-﻿using Pokekotas.Domain.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Pokekotas.Domain.Models;
 
 namespace Pokekotas.Api.Extensions
 {
