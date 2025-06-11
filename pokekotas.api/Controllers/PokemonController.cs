@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Pokekotas.Api.Extensions;
 using Pokekotas.Api.Interfaces;
-using Pokekotas.Domain.Dtos;
+using Pokekotas.Domain.Models;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Pokekotas.Api.Controllers
@@ -8,21 +9,22 @@ namespace Pokekotas.Api.Controllers
     [ExcludeFromCodeCoverage]
     [Route("api/[controller]")]
     [ApiController]
-    public class PokemonController(IPokemonAcl service) : Controller
+    public class PokemonController(IPokemonService service) : Controller
     {
-        private readonly IPokemonAcl _service = service;
+        private readonly IPokemonService _service = service;
 
-        [HttpGet()]
-        public async Task<IActionResult> Get()
+        [HttpGet("get-by-id/{pokemonId:int}")]
+        public async Task<IActionResult> GetById(int pokemonId)
         {
-
-            var result = await _service.GetRandom(10);
-
-            List<PokemonDto> pokemonList = result.Select(x => new PokemonDto(x)).ToList();
-
-
-            return Ok(pokemonList);
+            PokemonResponse result = await _service.GetById(pokemonId);
+            return result.ToHttpResult();
         }
 
+        [HttpGet("get-random")]
+        public async Task<IActionResult> Get()
+        {
+            PokemonResponse result = await _service.GetRandom(10);
+            return result.ToHttpResult();
+        }
     }
 }

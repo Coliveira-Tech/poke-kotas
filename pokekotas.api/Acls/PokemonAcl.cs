@@ -13,40 +13,44 @@ namespace Pokekotas.Api.Acls
         {
             return await _baseUrl
                             .WithGraphQLQuery(@"
-                                query ($id: Int!){
-                                  pokemon: pokemon_v2_pokemonspecies_by_pk(id: $id) {
+                                query ($pokemonId: Int!)
+                                {
+                                  RawPokemons: pokemon_v2_pokemon(
+                                    where: {id: {_eq: $pokemonId}, is_default: {_eq: true}}
+                                  ) {
                                     id
                                     name
-                                    pokemon_v2_pokemons {
-                                      height
-                                      weight
-                                      base_experience
-                                      pokemon_v2_pokemonstats {
-                                        pokemon_v2_stat {
-                                          name
-                                        }
-                                        base_stat
+                                    height
+                                    weight
+                                    base_experience
+                                    is_default
+                                    pokemon_v2_pokemonstats {
+                                      pokemon_v2_stat {
+                                        name
                                       }
-                                      pokemon_v2_pokemontypes {
-                                        pokemon_v2_type {
+                                      base_stat
+                                    }
+                                    pokemon_v2_pokemontypes {
+                                      pokemon_v2_type {
+                                        id
+                                        name
+                                      }
+                                    }
+                                    pokemon_v2_pokemonsprites {
+                                      sprites
+                                    }
+                                    pokemon_v2_pokemonspecy {
+                                      pokemon_v2_evolutionchain {
+                                        pokemon_v2_pokemonspecies {
                                           id
                                           name
                                         }
-                                      }
-                                      pokemon_v2_pokemonsprites {
-                                        sprites
-                                      }
-                                    }
-                                    pokemon_v2_evolutionchain {
-                                      pokemon_v2_pokemonspecies {
-                                        id
-                                        name
                                       }
                                     }
                                   }
                                 }
                              ")
-                            .SetGraphQLVariables(new { id = pokemonId })
+                            .SetGraphQLVariables(new { pokemonId })
                             .PostGraphQLQueryAsync()
                             .ReceiveGraphQLQueryResults<RawPokemonDto>();
         }

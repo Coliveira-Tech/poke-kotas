@@ -7,6 +7,9 @@ namespace Pokekotas.Api.Extensions
     {
         public static ObjectResult ToHttpResult<T>(this BaseResponse<T> response)
         {
+            if (!response.IsSuccess && response.ErrorCode is null)
+                response.ErrorCode = StatusCodes.Status400BadRequest;
+
             return response.ErrorCode switch
             {
                 StatusCodes.Status400BadRequest => new BadRequestObjectResult(response),

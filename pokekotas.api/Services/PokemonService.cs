@@ -18,22 +18,28 @@ namespace Pokekotas.Api.Services
             _logger.LogInformation("Fetching Pokemon by ID: {PokemonId}", pokemonId);
             IGraphQLQueryResults<RawPokemonDto> result = await _pokemonAcl.GetById(pokemonId);
 
-            if (result.Errors?.Count > 0)
-            {
-                _logger.LogError("Error fetching Pokemon by ID {PokemonId}: {Errors}", pokemonId, result.Errors);
-                response.Message.AddRange(result.Errors.Select(e => e.Message));
-            }
+            response.Message = [.. result.Errors.Select(e => e.Message)];
 
-            if(result.Count == 0)
+            if (result.Count == 0)
             {
-                _logger.LogWarning("No Pokemon found with ID: {PokemonId}", pokemonId);
                 response.Message.Add($"Pokemon with ID {pokemonId} not found.");
                 response.ErrorCode = 404;
             }
 
-            response.ListResponse = result
-                                      .Select(x => new PokemonDto(x))
-                                      .ToList();
+            response.ListResponse = [.. result.Select(pokemon => new PokemonDto(pokemon))];
+
+            return response;
+        }
+
+        public async Task<PokemonResponse> GetRandom(int quantity)
+        {
+            PokemonResponse response = new();
+
+            _logger.LogInformation("Fetching {quantity} random pokemons", quantity);
+            IGraphQLQueryResults<RawPokemonDto> result = await _pokemonAcl.GetRandom(quantity);
+
+            response.Message = [.. result.Errors.Select(e => e.Message)];
+            response.ListResponse = [.. result.Select(pokemon => new PokemonDto(pokemon))];
 
             return response;
         }
