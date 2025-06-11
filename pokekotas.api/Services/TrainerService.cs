@@ -1,16 +1,17 @@
-﻿using Pokekotas.Api.Extensions;
-using Pokekotas.Api.Interfaces;
+﻿using Pokekotas.Api.Interfaces;
 using Pokekotas.Domain.Dtos;
 using Pokekotas.Domain.Entities;
 using Pokekotas.Domain.Models;
 
 namespace Pokekotas.Api.Services
 {
-    public class TrainerService(ILogger<TrainerService> logger,
-                          IRepository<Trainer> repository) : ITrainerService
+    public class TrainerService(ILogger<TrainerService> logger
+                              , IRepository<Trainer> repository
+                              , IPokemonAcl pokemonAcl) : ITrainerService
     {
         private readonly ILogger<TrainerService> _logger = logger;
         private readonly IRepository<Trainer> _repository = repository;
+        private readonly IPokemonAcl _pokemonAcl = pokemonAcl;
 
         public async Task<TrainerResponse> Delete(Guid id)
         {
@@ -30,11 +31,8 @@ namespace Pokekotas.Api.Services
 
                 await _repository.Delete(entity);
 
-                TrainerDto? dto = new(entity);
+                response.ListResponse.Add(new TrainerDto(entity, await GetRawPokemonList(entity)));
 
-                ArgumentNullException.ThrowIfNull(dto);
-
-                response.ListResponse.Add(dto);
                 _logger.LogInformation("Successfully delete trainer {id}", entity.Id);
             }
             catch (Exception ex)
@@ -62,7 +60,10 @@ namespace Pokekotas.Api.Services
                     return response;
                 }
 
-                response.ListResponse.AddRange(entities.ToDtoList<Trainer, TrainerDto>());
+                entities.ToList().ForEach(entity =>
+                {
+                    response.ListResponse.Add(new TrainerDto(entity, GetRawPokemonList(entity).Result));
+                });
 
                 _logger.LogInformation("Successfully retrieve {count} trainers", entities.Count());
             }
@@ -93,7 +94,7 @@ namespace Pokekotas.Api.Services
                     return response;
                 }
 
-                response.ListResponse.Add(new TrainerDto(entity));
+                response.ListResponse.Add(new TrainerDto(entity, await GetRawPokemonList(entity)));
 
                 _logger.LogInformation("Successfully retrieve trainer {id}", entity.Id);
             }
@@ -122,11 +123,8 @@ namespace Pokekotas.Api.Services
 
                 await _repository.Insert(entity);
 
-                TrainerDto? dto = new(entity);
+                response.ListResponse.Add(new TrainerDto(entity, await GetRawPokemonList(entity)));
 
-                ArgumentNullException.ThrowIfNull(dto);
-
-                response.ListResponse.Add(dto);
                 _logger.LogInformation("Successfully inserted trainer {id}", entity.Id);
             }
             catch (Exception ex)
@@ -155,14 +153,10 @@ namespace Pokekotas.Api.Services
                 entity.Age = request.Age;
                 entity.Document = request.Document;
                 
-
                 await _repository.Update(entity);
 
-                TrainerDto? dto = new(entity);
+                response.ListResponse.Add(new TrainerDto(entity, await GetRawPokemonList(entity)));
 
-                ArgumentNullException.ThrowIfNull(dto);
-
-                response.ListResponse.Add(dto);
                 _logger.LogInformation("Trainer {id} successfully updated", entity.Id);
             }
             catch (Exception ex)
@@ -173,6 +167,18 @@ namespace Pokekotas.Api.Services
             }
 
             return response;
+        }
+
+        private async Task<List<RawPokemonDto>> GetRawPokemonList(Trainer entity)
+        {
+            var rawPokemonResult = await _pokemonAcl
+                                       .GetByIds([.. entity.CapturedPokemons
+                                                            .Select(pokemon => pokemon.PokemonId)]);
+
+            if (rawPokemonResult.HasAnyErrors())
+                throw new InvalidOperationException($"Error fetching Pokemon data: {string.Join("| ", rawPokemonResult.Errors.Select(e => e.Message))}");
+
+            return [.. rawPokemonResult];
         }
     }
 }

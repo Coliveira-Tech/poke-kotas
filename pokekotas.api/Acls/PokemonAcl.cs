@@ -55,29 +55,17 @@ namespace Pokekotas.Api.Acls
                             .ReceiveGraphQLQueryResults<RawPokemonDto>();
         }
 
-        public async Task<IGraphQLQueryResults<RawPokemonDto>> GetRandom(int quantity)
+        public async Task<IGraphQLQueryResults<RawPokemonDto>> GetByIds(int[] ids)
         {
-            int lastPokemonAvailable = _configuration.GetValue<int>("LastPokemonAvailable");
-
             if (string.IsNullOrEmpty(_baseUrl))
                 throw new InvalidOperationException("Base URL is not configured in the application settings.");
 
-            if (quantity < 1 || quantity > lastPokemonAvailable)
-                throw new ArgumentOutOfRangeException(nameof(quantity), $"Quantity must be between 1 and {lastPokemonAvailable}.");
-
-            var random = new Random(DateTime.Now.Millisecond);
-            var ids = Enumerable.Range(1, lastPokemonAvailable)
-                                .OrderBy(_ => random.Next())
-                                .Take(quantity)
-                                .ToArray();
-
-            return await _baseUrl 
+            return await _baseUrl
                             .WithGraphQLQuery(@"
                                 query ($ids: [Int!])
                                 {
                                   RawPokemons: pokemon_v2_pokemon(
                                     order_by: {id: asc}
-                                    limit: 10
                                     where: {id: {_in: $ids}, is_default: {_eq: true}}
                                   ) {
                                     id
@@ -114,6 +102,25 @@ namespace Pokekotas.Api.Acls
                             .SetGraphQLVariables(new { ids })
                             .PostGraphQLQueryAsync()
                             .ReceiveGraphQLQueryResults<RawPokemonDto>("RawPokemons");
+        }
+
+        public async Task<IGraphQLQueryResults<RawPokemonDto>> GetRandom(int quantity)
+        {
+            int lastPokemonAvailable = _configuration.GetValue<int>("LastPokemonAvailable");
+
+            if (string.IsNullOrEmpty(_baseUrl))
+                throw new InvalidOperationException("Base URL is not configured in the application settings.");
+
+            if (quantity < 1 || quantity > lastPokemonAvailable)
+                throw new ArgumentOutOfRangeException(nameof(quantity), $"Quantity must be between 1 and {lastPokemonAvailable}.");
+
+            var random = new Random(DateTime.Now.Millisecond);
+            var ids = Enumerable.Range(1, lastPokemonAvailable)
+                                .OrderBy(_ => random.Next())
+                                .Take(quantity)
+                                .ToArray();
+
+            return await GetByIds(ids);
         }
     }
 }

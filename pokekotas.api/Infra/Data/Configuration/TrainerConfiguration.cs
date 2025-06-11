@@ -18,7 +18,6 @@ namespace Pokekotas.Api.Infra.Data.Configuration
 
             builder.HasKey(e => e.Id);
             builder.Navigation(e => e.CapturedPokemons).AutoInclude();
-
         }
     }
 }
