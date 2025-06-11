@@ -145,13 +145,16 @@ namespace Pokekotas.Api.Services
 
             try
             {
-                Trainer entity = new()
-                {
-                    Id = id,
-                    Name = request.Name,
-                    Age = request.Age,
-                    Document = request.Document
-                };
+                Trainer? entity = (await _repository
+                                            .Get(x => x.Id == id))
+                                            .FirstOrDefault();
+
+                ArgumentNullException.ThrowIfNull(entity);
+
+                entity.Name = request.Name;
+                entity.Age = request.Age;
+                entity.Document = request.Document;
+                
 
                 await _repository.Update(entity);
 

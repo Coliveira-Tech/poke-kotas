@@ -11,12 +11,10 @@ namespace Pokekotas.Api.Infra.Data.Configuration
         public void Configure(EntityTypeBuilder<CapturedPokemon> builder)
         {
             builder.ToTable("CapturedPokemon");
-            builder.Property(e => e.Id).HasDefaultValueSql("NEWID()");
+            builder.Property(e => e.Id).IsRequired();
             builder.Property(e => e.TrainerId).IsRequired();
             builder.Property(e => e.PokemonId).IsRequired();
-            builder.Property(e => e.CapturedAt)
-                .IsRequired()
-                .HasDefaultValueSql("GETUTCDATE()");
+            builder.Property(e => e.CapturedAt).IsRequired();
             builder.Property(e => e.Level)
                 .IsRequired()
                 .HasDefaultValue(1);
