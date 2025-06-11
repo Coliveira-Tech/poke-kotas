@@ -2,7 +2,7 @@
 {
     public class PokemonTypeDto
     {
-        public PokemonTypeDto() { }
+        //public PokemonTypeDto() { }
         public PokemonTypeDto(RawPokemonTypeDto pokemonType)
         {
             if (pokemonType == null)

@@ -2,7 +2,7 @@
 {
     public class EvolutionChainDto
     {
-        public EvolutionChainDto() { }
+        //public EvolutionChainDto() { }
 
         public EvolutionChainDto(RawPokemonSpeciesIdNameDto evolutionChain)
         {
