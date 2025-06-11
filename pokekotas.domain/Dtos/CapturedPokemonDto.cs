@@ -2,12 +2,25 @@
 
 namespace Pokekotas.Domain.Dtos
 {
-    public class CapturedPokemonDto(CapturedPokemon entity, RawPokemonDto rawPokemon) : PokemonDto(rawPokemon)
+    public class CapturedPokemonDto : PokemonDto
     {
-        public int PokemonId { get; set; } = entity.PokemonId;
-        public DateTime CapturedAt { get; set; } = entity.CapturedAt;
-        public int Level { get; set; } = entity.Level;
-        public string? Nickname { get; set; } = entity.Nickname;
-        public TrainerSumaryDto Trainer { get; set; } = new TrainerSumaryDto(entity.Trainer);
+        public CapturedPokemonDto(CapturedPokemon entity
+                                , RawPokemonDto rawPokemon
+                                , bool includeTrainer = true) : base(rawPokemon)
+        {
+            PokemonId = entity.PokemonId;
+            CapturedAt = entity.CapturedAt;
+            Level = entity.Level;
+            Nickname = entity.Nickname;
+            
+            if(includeTrainer)
+                Trainer = new TrainerSumaryDto(entity.Trainer);
+        }
+
+        public int PokemonId { get; set; }
+        public DateTime CapturedAt { get; set; } = DateTime.UtcNow;
+        public int Level { get; set; } = 1;
+        public string? Nickname { get; set; }
+        public TrainerSumaryDto Trainer { get; set; } = null!;
     }
 }

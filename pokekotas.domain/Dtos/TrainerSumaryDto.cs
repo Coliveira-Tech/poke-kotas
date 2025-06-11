@@ -2,10 +2,20 @@
 
 namespace Pokekotas.Domain.Dtos
 {
-    public class TrainerSumaryDto(Trainer entity)
+    public class TrainerSumaryDto
     {
-        public Guid Id { get; set; } = entity.Id;
-        public string Name { get; set; } = entity.Name;
-        public int Age { get; set; } = entity.Age;
+        public TrainerSumaryDto(Trainer entity)
+        {
+            if(entity is null)
+                return;
+
+            Id = entity.Id;
+            Name = entity.Name;
+            Age = entity.Age;
+        }
+
+        public Guid Id { get; set; }
+        public string Name { get; set; } = null!;
+        public int Age { get; set; }
     }
 }

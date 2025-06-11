@@ -2,7 +2,6 @@
 {
     public class PokemonSpriteDto
     {
-        //public PokemonSpriteDto() { }
         public PokemonSpriteDto(RawPokemonSpriteDto pokemonSprite)
         {
             if (pokemonSprite == null)

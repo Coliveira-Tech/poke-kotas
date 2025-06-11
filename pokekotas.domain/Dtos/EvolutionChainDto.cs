@@ -2,8 +2,6 @@
 {
     public class EvolutionChainDto
     {
-        //public EvolutionChainDto() { }
-
         public EvolutionChainDto(RawPokemonSpeciesIdNameDto evolutionChain)
         {
             if (evolutionChain == null)

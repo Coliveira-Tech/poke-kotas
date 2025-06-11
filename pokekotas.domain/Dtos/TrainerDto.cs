@@ -26,7 +26,7 @@ namespace Pokekotas.Domain.Dtos
                                                     .CapturedPokemons
                                                     .FirstOrDefault(p => p.PokemonId == rawPokemon.Id);
                 if (capturedPokemon is not null)
-                    CapturedPokemons.Add(new CapturedPokemonDto(capturedPokemon, rawPokemon));
+                    CapturedPokemons.Add(new CapturedPokemonDto(capturedPokemon, rawPokemon, false));
             });
         }
 
