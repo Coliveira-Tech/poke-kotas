@@ -13,7 +13,7 @@ namespace Pokekotas.Api.Controllers
     {
         private readonly IPokemonService _service = service;
 
-        [HttpGet("get-by-id/{pokemonId:int}")]
+        [HttpGet("{pokemonId:int}")]
         public async Task<IActionResult> GetById(int pokemonId)
         {
             PokemonResponse result = await _service.GetById(pokemonId);
@@ -21,7 +21,7 @@ namespace Pokekotas.Api.Controllers
         }
 
         [HttpGet("get-random")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetRandom()
         {
             PokemonResponse result = await _service.GetRandom(10);
             return result.ToHttpResult();

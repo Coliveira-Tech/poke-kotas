@@ -1,13 +1,14 @@
 ﻿using Pokekotas.Domain.Entities;
+using Pokekotas.Domain.Models;
 
 namespace Pokekotas.Api.Interfaces
 {
     public interface ITrainerService
     {
-        Task<IEnumerable<Trainer>> GetTrainers();
-        Task<Trainer> GetTrainerById(Guid id);
-        Task AddTrainer(Trainer trainer);
-        Task UpdateTrainer(Trainer trainer);
-        Task DeleteTrainer(Guid id);
+        Task<TrainerResponse> Delete(Guid id);
+        Task<TrainerResponse> GetAll();
+        Task<TrainerResponse> GetById(Guid id);
+        Task<TrainerResponse> Insert(TrainerInsertRequest request);
+        Task<TrainerResponse> Update(Guid id, TrainerUpdateRequest request);
     }
 }

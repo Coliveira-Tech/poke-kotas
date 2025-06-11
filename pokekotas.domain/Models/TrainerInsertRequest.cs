@@ -1,11 +1,9 @@
-﻿namespace Pokekotas.Domain.Entities
+﻿namespace Pokekotas.Domain.Models
 {
-    public class Trainer: BaseEntity
+    public class TrainerInsertRequest
     {
         public string Name { get; set; } = string.Empty;
         public int Age { get; set; }
         public string Document { get; set; } = string.Empty;
-
-        public virtual ICollection<CapturedPokemon> CapturedPokemons { get; set; } = [];
     }
 }

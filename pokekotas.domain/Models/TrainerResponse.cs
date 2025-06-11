@@ -2,7 +2,7 @@
 
 namespace Pokekotas.Domain.Models
 {
-    public class PokemonResponse : BaseResponse<PokemonDto>
+    public class TrainerResponse: BaseResponse<TrainerDto>
     {
     }
 }

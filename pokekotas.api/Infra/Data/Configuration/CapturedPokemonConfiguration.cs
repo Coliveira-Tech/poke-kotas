@@ -20,8 +20,16 @@ namespace Pokekotas.Api.Infra.Data.Configuration
             builder.Property(e => e.Level)
                 .IsRequired()
                 .HasDefaultValue(1);
+            builder.Property(e => e.Nickname);
 
             builder.HasKey(e => e.Id);
+
+            builder.Navigation(e => e.Trainer).AutoInclude();
+
+            builder.HasOne(e => e.Trainer)
+                .WithMany(e => e.CapturedPokemons)
+                .HasForeignKey(e => e.TrainerId)
+                .IsRequired();
         }
     }
 }
