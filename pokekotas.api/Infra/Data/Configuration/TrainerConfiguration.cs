@@ -17,6 +17,8 @@ namespace Pokekotas.Api.Infra.Data.Configuration
             builder.Property(e => e.Document).IsRequired().HasMaxLength(20);
 
             builder.HasKey(e => e.Id);
+            builder.Navigation(e => e.CapturedPokemons).AutoInclude();
+
         }
     }
 }

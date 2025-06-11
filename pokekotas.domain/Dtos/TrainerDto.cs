@@ -12,11 +12,14 @@ namespace Pokekotas.Domain.Dtos
             Name = entity.Name;
             Age = entity.Age;
             Document = entity.Document;
+            CapturedPokemons.AddRange(entity.CapturedPokemons.Select(p => new CapturedPokemonDto(p)));
         }
 
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public int Age { get; set; }
         public string Document { get; set; } = string.Empty;
+
+        List<CapturedPokemonDto> CapturedPokemons = [];
     }
 }
